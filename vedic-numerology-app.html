@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vedic Numerology Suite</title>
+  <style>
+    :root {
+      --ink: #1d1b18;
+      --muted: #68615a;
+      --line: #d8d1c7;
+      --paper: #fbf8f2;
+      --panel: #ffffff;
+      --sun: #d99a2b;
+      --leaf: #2f7a63;
+      --rose: #b74d5a;
+      --blue: #356b95;
+      --shadow: 0 14px 36px rgba(35, 30, 24, .11);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(217,154,43,.18), transparent 28rem),
+        radial-gradient(circle at 90% 0%, rgba(47,122,99,.16), transparent 32rem),
+        linear-gradient(135deg, #fbf8f2 0%, #f2eee7 52%, #eef5f1 100%);
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .app {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px 18px;
+      border-right: 1px solid var(--line);
+      background: rgba(255,255,255,.66);
+      backdrop-filter: blur(18px);
+      overflow: auto;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: conic-gradient(from 140deg, var(--sun), var(--rose), var(--blue), var(--leaf), var(--sun));
+      box-shadow: var(--shadow);
+      font-weight: 800;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: 19px; line-height: 1.15; margin-bottom: 2px; }
+    .subtitle { color: var(--muted); font-size: 13px; margin: 0; }
+    .nav {
+      display: grid;
+      gap: 7px;
+      margin: 18px 0 24px;
+    }
+    .nav button {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .nav button.active, .nav button:hover {
+      background: #fff;
+      border-color: var(--line);
+      box-shadow: 0 8px 18px rgba(35,30,24,.06);
+    }
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: rgba(255,255,255,.7);
+    }
+    .main {
+      padding: 28px;
+      overflow: hidden;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+    .topbar h2 {
+      font-size: clamp(26px, 3vw, 42px);
+      line-height: 1;
+      margin-bottom: 8px;
+      letter-spacing: 0;
+    }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      min-height: 40px;
+      padding: 9px 12px;
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 18px rgba(35,30,24,.05);
+    }
+    .btn.primary {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .panel {
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      box-shadow: 0 10px 28px rgba(35,30,24,.06);
+    }
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 11px 12px;
+      background: #fff;
+      color: var(--ink);
+      outline: none;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--leaf);
+      box-shadow: 0 0 0 3px rgba(47,122,99,.12);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .metric {
+      min-height: 118px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-left: 5px solid var(--sun);
+    }
+    .metric:nth-child(2n) { border-left-color: var(--leaf); }
+    .metric:nth-child(3n) { border-left-color: var(--blue); }
+    .metric strong { font-size: 36px; line-height: 1; }
+    .tag-row, .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      padding: 6px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .tabs { margin-bottom: 16px; }
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: rgba(255,255,255,.72);
+    }
+    .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .view { display: none; }
+    .view.active { display: block; }
+    .loshu {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      aspect-ratio: 1 / 1;
+      max-width: 360px;
+    }
+    .loshu-cell {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #fff, #f7f1e8);
+      min-width: 0;
+    }
+    .loshu-cell b { display: block; font-size: 26px; }
+    .loshu-cell span { color: var(--muted); font-size: 12px; min-height: 16px; }
+    .report-list {
+      display: grid;
+      gap: 12px;
+    }
+    .report-item {
+      display: grid;
+      gap: 5px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+    .report-item:last-child { border-bottom: 0; padding-bottom: 0; }
+    .bar {
+      height: 10px;
+      border-radius: 999px;
+      background: #e9e0d6;
+      overflow: hidden;
+    }
+    .bar > i {
+      display: block;
+      height: 100%;
+      width: var(--w, 50%);
+      background: linear-gradient(90deg, var(--leaf), var(--sun));
+    }
+    .lead-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .lead-table th, .lead-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .yantra {
+      width: 100%;
+      min-height: 190px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(45deg, transparent 48%, rgba(29,27,24,.09) 49%, rgba(29,27,24,.09) 51%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, rgba(29,27,24,.09) 49%, rgba(29,27,24,.09) 51%, transparent 52%),
+        radial-gradient(circle, rgba(217,154,43,.26) 0 13%, transparent 14%),
+        radial-gradient(circle at 50% 50%, transparent 0 32%, rgba(53,107,149,.16) 33% 34%, transparent 35%),
+        linear-gradient(135deg, #fff, #f5f0e9);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .yantra span {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--line);
+      font-size: 42px;
+      box-shadow: var(--shadow);
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 920px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .main { padding: 20px; }
+      .topbar { display: grid; }
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8 { grid-column: span 12; }
+    }
+    @media (max-width: 620px) {
+      .form-grid, .nav { grid-template-columns: 1fr; }
+      .main { padding: 14px; }
+      .panel { padding: 14px; }
+      .actions { width: 100%; }
+      .btn { flex: 1; justify-content: center; }
+    }
+    @media print {
+      body { background: #fff; }
+      .sidebar, .actions, .tabs, .no-print { display: none !important; }
+      .app { display: block; }
+      .main { padding: 0; }
+      .view { display: block !important; page-break-inside: avoid; margin-bottom: 18px; }
+      .panel { box-shadow: none; background: #fff; }
+    }
+
+    .result-card{
+        margin-top:20px;
+        padding:20px;
+        border-radius:10px;
+        background:#f8fafc;
+        text-align:center;
+    }
+
+    .result-card h2{
+        font-size:48px;
+        margin:0;
+        color:#2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">9</div>
+        <div>
+          <h1>Vedic Numerology Suite</h1>
+          <p class="subtitle">Consultant dashboard and report engine</p>
+        </div>
+      </div>
+      <nav class="nav" id="nav"></nav>
+      <div class="mini-card">
+        <strong>Current Profile</strong>
+        <p class="subtitle" id="profileSummary">Enter a name and birth date to generate the report.</p>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2 id="viewTitle">Personal Report</h2>
+          <p class="subtitle" id="viewSub">Core numbers, planets, Lo Shu, karma, career, lucky elements, and remedies.</p>
+        </div>
+        <div class="actions no-print">
+          <button class="btn" id="sampleBtn" title="Load sample client">Load Sample</button>
+          <button class="btn" id="saveLeadBtn" title="Save this profile as a lead">Save Lead</button>
+          <button class="btn primary" id="printBtn" title="Print or save as PDF">Export PDF</button>
+        </div>
+      </div>
+
+      <section class="panel span-12 no-print" style="margin-bottom:16px">
+        <div class="form-grid">
+          <label>Full Name <input id="fullName" value="Diptanshu Sharma" autocomplete="name"></label>
+          <label>Date of Birth <input id="dob" type="date" value="1995-08-24"></label>
+          <label>Gender <select id="gender"><option>Prefer not to say</option><option>Female</option><option>Male</option><option>Non-binary</option></select></label>
+          <label>Report Year <input id="year" type="number" min="1900" max="2100" value="2026"></label>
+          <label>Email <input id="email" type="email" placeholder="client@example.com"></label>
+          <label>Phone <input id="phone" type="tel" placeholder="+91 98765 43210"></label>
+        </div>
+      </section>
+
+      <div class="tabs no-print" id="tabs"></div>
+      <div id="views"></div>
+      <div id="quickCalc">
+        <div class="card">
+            <h3>Name Numerology Calculator</h3>
+
+            <input type="text"
+                  id="calcName"
+                  placeholder="Enter Full Name">
+
+            <button onclick="checkName()">
+                Calculate
+            </button>
+
+            <div id="nameResult"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const planets = {
+      1:{planet:'Sun', glyph:'☉', color:'Gold, saffron, ruby', days:'Sunday', gem:'Ruby', direction:'East', traits:'leadership, visibility, confidence', caution:'ego, impatience, isolation', professions:'government, leadership, administration, entrepreneurship', mantra:'Aditya Hridayam or Surya mantra on Sundays'},
+      2:{planet:'Moon', glyph:'☾', color:'White, pearl, silver', days:'Monday', gem:'Pearl', direction:'North-west', traits:'intuition, empathy, memory', caution:'mood swings, doubt, over-sensitivity', professions:'care, design, hospitality, counselling', mantra:'Chandra mantra and water offering on Mondays'},
+      3:{planet:'Jupiter', glyph:'♃', color:'Yellow, turmeric, gold', days:'Thursday', gem:'Yellow sapphire', direction:'North-east', traits:'wisdom, teaching, growth', caution:'over-promising, pride, indulgence', professions:'education, law, finance, strategy', mantra:'Guru mantra, charity, and study on Thursdays'},
+      4:{planet:'Rahu', glyph:'☊', color:'Electric blue, smoky grey', days:'Saturday', gem:'Hessonite by guidance', direction:'South-west', traits:'innovation, unconventional thinking, systems', caution:'restlessness, rebellion, sudden turns', professions:'technology, media, analytics, foreign trade', mantra:'Rahu mantra, discipline, and digital restraint'},
+      5:{planet:'Mercury', glyph:'☿', color:'Green, teal, mixed tones', days:'Wednesday', gem:'Emerald', direction:'North', traits:'communication, trade, adaptability', caution:'scattered focus, nervousness, inconsistency', professions:'sales, writing, marketing, travel, software', mantra:'Budha mantra, journaling, and skill practice'},
+      6:{planet:'Venus', glyph:'♀', color:'Pastel pink, cream, sky blue', days:'Friday', gem:'Diamond or opal by guidance', direction:'South-east', traits:'beauty, comfort, harmony', caution:'luxury attachment, people pleasing, delay', professions:'fashion, luxury, arts, hospitality, real estate', mantra:'Shukra mantra, cleanliness, and aesthetic order'},
+      7:{planet:'Ketu', glyph:'☋', color:'Violet, smoke, off-white', days:'Tuesday', gem:'Cat eye by guidance', direction:'South', traits:'research, spirituality, analysis', caution:'detachment, secrecy, loneliness', professions:'research, mysticism, security, psychology', mantra:'Ketu mantra, meditation, and service to teachers'},
+      8:{planet:'Saturn', glyph:'♄', color:'Navy, black, deep indigo', days:'Saturday', gem:'Blue sapphire only after guidance', direction:'West', traits:'discipline, endurance, justice', caution:'delay, heaviness, pessimism', professions:'operations, law, engineering, mining, compliance', mantra:'Shani mantra, service, and donation on Saturdays'},
+      9:{planet:'Mars', glyph:'♂', color:'Red, coral, copper', days:'Tuesday', gem:'Red coral', direction:'South', traits:'courage, action, protection', caution:'anger, haste, conflict', professions:'defence, sports, surgery, engineering, crisis roles', mantra:'Hanuman Chalisa or Mangala mantra on Tuesdays'}
+    };
+    const chaldean = {a:1,i:1,j:1,q:1,y:1,b:2,k:2,r:2,c:3,g:3,l:3,s:3,d:4,m:4,t:4,e:5,h:5,n:5,x:5,u:6,v:6,w:6,o:7,z:7,f:8,p:8};
+    const views = [
+      ['personal','Personal Report','Core numbers, planets, karma, career, lucky elements, and remedies.'],
+      ['loshu','Lo Shu Grid','Missing, repeated numbers, and arrows from the birth date.'],
+      ['compat','Compatibility','Love, marriage, friendship, family, and business matching.'],
+      ['business','Business & Names','Brand vibration, industry fit, and spelling suggestions.'],
+      ['forecast','Annual Forecast','Personal year, month, day, focus areas, and action plan.'],
+      ['leads','Leads CRM','Saved client profiles in this browser.']
+    ];
+    const $ = id => document.getElementById(id);
+    const cleanName = s => (s || '').toLowerCase().replace(/[^a-z]/g,'');
+    const digits = s => String(s || '').replace(/\D/g,'').split('').map(Number);
+    function reduce(n){ n = Math.abs(Number(n) || 0); while(n > 9) n = String(n).split('').reduce((a,b)=>a+Number(b),0); return n || 0; }
+    function rawNameNumber(name, filter){ return cleanName(name).split('').reduce((sum, c) => sum + ((filter && !filter(c)) ? 0 : (chaldean[c] || 0)), 0); }
+    function nameNumber(name, filter){ return reduce(rawNameNumber(name, filter)); }
+    function dobParts(dob){ const d = new Date(dob + 'T00:00:00'); return {date:d, day:d.getDate(), month:d.getMonth()+1, year:d.getFullYear()}; }
+    function profile(){
+      const name = $('fullName').value.trim();
+      const dob = $('dob').value;
+      const parts = dobParts(dob);
+      const rawDestiny = rawNameNumber(name);
+      const driver = reduce(parts.day);
+      const conductor = reduce(digits(dob).reduce((a,b)=>a+b,0));
+      const soul = nameNumber(name, c => 'aeiou'.includes(c));
+      const personality = nameNumber(name, c => !'aeiou'.includes(c));
+      const destiny = reduce(rawDestiny);
+      const maturity = reduce(driver + conductor);
+      const personalYear = reduce(parts.day + parts.month + Number($('year').value));
+      const personalMonth = reduce(personalYear + (new Date().getMonth()+1));
+      const personalDay = reduce(personalMonth + new Date().getDate());
+      const karmic = [13,14,16,19].filter(k => [parts.day, digits(dob).reduce((a,b)=>a+b,0), rawDestiny].includes(k));
+      return {name,dob,parts,driver,conductor,soul,personality,destiny,maturity,personalYear,personalMonth,personalDay,karmic};
+    }
+    function interp(n){ return planets[n] || planets[1]; }
+    function score(a,b,weight=1){
+      const diff = Math.abs(a-b);
+      const base = [92,84,78,72,66,60,68,74,80][diff] || 62;
+      return Math.max(35, Math.min(98, Math.round(base * weight)));
+    }
+    function htmlMetric(label, value, detail){ return `<article class="panel metric"><span class="subtitle">${label}</span><strong>${value}</strong><p class="subtitle">${detail}</p></article>`; }
+    function reportItem(title, body){ return `<div class="report-item"><strong>${title}</strong><span class="subtitle">${body}</span></div>`; }
+    function renderPersonal(p){
+      const core = [
+        ['Driver',p.driver,`Birth-day vibration ruled by ${interp(p.driver).planet}`],
+        ['Conductor',p.conductor,`Life path ruled by ${interp(p.conductor).planet}`],
+        ['Name',p.destiny,`Chaldean name total ruled by ${interp(p.destiny).planet}`],
+        ['Soul Urge',p.soul,`Inner motivation and desire pattern`],
+        ['Personality',p.personality,`Outer impression and social mask`],
+        ['Maturity',p.maturity,`Long-term evolution theme`]
+      ].map(x=>htmlMetric(...x)).join('');
+      const dominant = [p.driver,p.conductor,p.destiny].map(interp);
+      return `<div class="grid">
+        <section class="span-12 grid">${core}</section>
+        <section class="panel span-4"><div class="yantra"><span>${interp(p.conductor).glyph}</span></div></section>
+        <section class="panel span-8"><h3>Planet Analysis</h3><div class="report-list">
+          ${dominant.map((d,i)=>reportItem(['Driver','Conductor','Name'][i] + ' - ' + d.planet, `Strengths: ${d.traits}. Watch: ${d.caution}. Best fields: ${d.professions}.`)).join('')}
+        </div></section>
+        <section class="panel span-6"><h3>Career Analysis</h3><div class="report-list">
+          ${reportItem('Best Industries', interp(p.conductor).professions)}
+          ${reportItem('Leadership Potential', `${p.driver === 1 || p.conductor === 1 || p.destiny === 1 ? 'High' : 'Moderate'} - strengthened by discipline and public visibility.`)}
+          ${reportItem('Wealth Potential', `${[3,5,6,8].includes(p.conductor) ? 'Strong' : 'Developing'} - build through ${interp(p.conductor).traits}.`)}
+          ${reportItem('Communication Potential', `${[3,5].includes(p.destiny) ? 'Excellent' : 'Steady'} - name number ${p.destiny} shapes client-facing style.`)}
+        </div></section>
+        <section class="panel span-6"><h3>Lucky Elements</h3><div class="tag-row">
+          ${interp(p.driver).color.split(', ').map(t=>`<span class="tag">${t}</span>`).join('')}
+          <span class="tag">${interp(p.driver).days}</span><span class="tag">${interp(p.driver).gem}</span><span class="tag">${interp(p.driver).direction}</span>
+          ${[p.driver,p.driver+9,p.driver+18,p.driver+27].filter(n=>n<=31).map(n=>`<span class="tag">${n}</span>`).join('')}
+        </div><h3 style="margin-top:18px">Remedies</h3><p class="subtitle">${interp(p.driver).mantra}. Keep the ${interp(p.driver).planet} vibration balanced with routine, mindful speech, and acts of service.</p></section>
+        <section class="panel span-12"><h3>Karmic Debt</h3><p class="subtitle">${p.karmic.length ? 'Detected: ' + p.karmic.join(', ') + '. Treat this as a focused growth area, not a fixed verdict.' : 'No classic karmic debt numbers 13, 14, 16, or 19 appear in the primary totals.'}</p></section>
+      </div>`;
+    }
+    function loshuData(p){
+      const counts = Object.fromEntries(Array.from({length:9},(_,i)=>[i+1,0]));
+      digits(p.dob).filter(Boolean).forEach(d=>counts[d]++);
+      const order = [4,9,2,3,5,7,8,1,6];
+      const arrows = [
+        ['Determination',[1,5,9]],['Intellect',[4,9,2]],['Emotional Balance',[3,5,7]],['Practicality',[8,1,6]],['Spirituality',[4,3,8]],['Activity',[2,7,6]],['Planning',[4,5,6]]
+      ];
+      return {counts, order, present:arrows.filter(a=>a[1].every(n=>counts[n]>0)), missing:arrows.filter(a=>a[1].every(n=>counts[n]===0))};
+    }
+    function renderLoshu(p){
+      const l = loshuData(p);
+      return `<div class="grid">
+        <section class="panel span-5"><h3>Lo Shu Grid</h3><div class="loshu">${l.order.map(n=>`<div class="loshu-cell"><b>${n}</b><span>${String(n).repeat(l.counts[n]) || 'missing'}</span></div>`).join('')}</div></section>
+        <section class="panel span-7"><h3>Pattern Reading</h3><div class="report-list">
+          ${reportItem('Missing Numbers', Object.entries(l.counts).filter(([n,c])=>!c).map(([n])=>n).join(', ') || 'None')}
+          ${reportItem('Repeated Numbers', Object.entries(l.counts).filter(([n,c])=>c>1).map(([n,c])=>`${n} x ${c}`).join(', ') || 'No repeated numbers')}
+          ${reportItem('Active Arrows', l.present.map(a=>a[0]).join(', ') || 'No complete active arrows')}
+          ${reportItem('Empty Arrows', l.missing.map(a=>a[0]).join(', ') || 'No fully empty arrows')}
+        </div></section>
+      </div>`;
+    }
+    function renderCompat(p){
+      return `<div class="grid">
+        <section class="panel span-4 no-print"><h3>Person B</h3><div class="form-grid" style="grid-template-columns:1fr">
+          <label>Name <input id="nameB" value="Ananya Rao"></label>
+          <label>Date of Birth <input id="dobB" type="date" value="1997-03-12"></label>
+        </div></section>
+        <section class="panel span-8" id="compatOut"></section>
+      </div>`;
+    }
+    function renderCompatOut(){
+      const p = profile();
+      const bname = $('nameB')?.value || 'Ananya Rao';
+      const bdob = $('dobB')?.value || '1997-03-12';
+      const bp = {name:bname,dob:bdob,driver:reduce(dobParts(bdob).day),conductor:reduce(digits(bdob).reduce((a,b)=>a+b,0)),destiny:nameNumber(bname)};
+      const rows = [
+        ['Love',score(p.driver,bp.driver,1.02)],['Marriage',score(p.conductor,bp.conductor,1)],['Friendship',score(p.destiny,bp.destiny,.98)],['Business',score(p.conductor,bp.destiny,.96)],['Family',score(p.driver,bp.conductor,1)]
+      ];
+      $('compatOut').innerHTML = `<h3>${p.name || 'Person A'} + ${bp.name}</h3><div class="report-list">${rows.map(([k,v])=>`<div class="report-item"><strong>${k}: ${v}%</strong><div class="bar"><i style="--w:${v}%"></i></div><span class="subtitle">Driver ${p.driver}/${bp.driver}, conductor ${p.conductor}/${bp.conductor}, name ${p.destiny}/${bp.destiny}</span></div>`).join('')}</div>`;
+      document.querySelectorAll('#nameB,#dobB').forEach(el => el.oninput = renderCompatOut);
+    }
+    function suggestions(name,target){
+      const base = cleanName(name).toUpperCase();
+      const inserts = ['A','E','H','N','O','R','S','Y'];
+      const out = new Set();
+      for(const ch of inserts){
+        for(let i=1;i<base.length;i++){
+          const s = base.slice(0,i)+ch+base.slice(i);
+          if(nameNumber(s) === target) out.add(s);
+          if(out.size >= 8) return [...out];
+        }
+      }
+      return [...out];
+    }
+    function renderBusiness(p){
+      return `<div class="grid">
+        <section class="panel span-5 no-print"><h3>Analyze Name</h3><div class="form-grid" style="grid-template-columns:1fr">
+          <label>Brand, Domain, or Current Name <input id="bizName" value="Banyan Tribe"></label>
+          <label>Target Number <select id="targetNo">${[1,2,3,4,5,6,7,8,9].map(n=>`<option ${n===6?'selected':''}>${n}</option>`).join('')}</select></label>
+        </div></section>
+        <section class="panel span-7" id="bizOut"></section>
+      </div>`;
+    }
+    function renderBusinessOut(){
+      const name = $('bizName')?.value || '';
+      const target = Number($('targetNo')?.value || 6);
+      const n = nameNumber(name);
+      const d = interp(n);
+      const sug = suggestions(name,target);
+      $('bizOut').innerHTML = `<h3>${name || 'Name Analysis'}: ${n} / ${d.planet}</h3><div class="report-list">
+        ${reportItem('Industry Suitability', `${d.professions}. This vibration favors ${d.traits}.`)}
+        ${reportItem('Risk Pattern', d.caution)}
+        ${reportItem('Target Suggestions', sug.length ? sug.join(', ') : 'No simple one-letter correction found. Try a different target or a longer spelling variant.')}
+      </div>`;
+      document.querySelectorAll('#bizName,#targetNo').forEach(el => el.oninput = renderBusinessOut);
+    }
+    function renderForecast(p){
+      const y = interp(p.personalYear), m = interp(p.personalMonth), d = interp(p.personalDay);
+      return `<div class="grid">
+        ${htmlMetric('Personal Year',p.personalYear,`${y.planet}: ${y.traits}`)}
+        ${htmlMetric('Personal Month',p.personalMonth,`${m.planet}: ${m.traits}`)}
+        ${htmlMetric('Personal Day',p.personalDay,`${d.planet}: ${d.traits}`)}
+        <section class="panel span-12"><h3>Action Plan</h3><div class="report-list">
+          ${reportItem('Career', `Prioritize ${y.professions.split(', ')[0]} style decisions: visible, practical, and timed.`)}
+          ${reportItem('Finance', `Use the ${m.planet} month to review spending, negotiate calmly, and keep reserves.`)}
+          ${reportItem('Relationships', `Lead with ${d.traits}; avoid ${d.caution}.`)}
+          ${reportItem('Health', 'Use routine, hydration, breathwork, and sleep discipline as the baseline remedy.')}
+          ${reportItem('Spiritual Growth', y.mantra)}
+        </div></section>
+      </div>`;
+    }
+    function leads(){ return JSON.parse(localStorage.getItem('vedicLeads') || '[]'); }
+    function saveLeads(list){ localStorage.setItem('vedicLeads', JSON.stringify(list)); }
+    function renderLeads(){
+      const list = leads();
+      return `<section class="panel"><h3>Lead Management</h3><table class="lead-table"><thead><tr><th>Name</th><th>DOB</th><th>Contact</th><th>Numbers</th></tr></thead><tbody>${list.map(l=>`<tr><td>${l.name}</td><td>${l.dob}</td><td>${l.email || ''}<br>${l.phone || ''}</td><td>Driver ${l.driver}, Conductor ${l.conductor}, Name ${l.destiny}</td></tr>`).join('') || '<tr><td colspan="4" class="subtitle">No saved leads yet.</td></tr>'}</tbody></table></section>`;
+    }
+    function render(){
+      const p = profile();
+      $('profileSummary').textContent = `${p.name || 'Unnamed'} - Driver ${p.driver}, Conductor ${p.conductor}, Name ${p.destiny}`;
+      const active = document.querySelector('.tab.active')?.dataset.view || 'personal';
+      const map = {personal:renderPersonal, loshu:renderLoshu, compat:renderCompat, business:renderBusiness, forecast:renderForecast, leads:renderLeads};
+      $('views').innerHTML = views.map(v=>`<div class="view ${v[0]===active?'active':''}" data-view="${v[0]}">${map[v[0]](p)}</div>`).join('');
+      if(active === 'compat') renderCompatOut();
+      if(active === 'business') renderBusinessOut();
+    }
+    function activate(id){
+      document.querySelectorAll('.tab,.nav button').forEach(b=>b.classList.toggle('active', b.dataset.view===id));
+      const meta = views.find(v=>v[0]===id);
+      $('viewTitle').textContent = meta[1];
+      $('viewSub').textContent = meta[2];
+      render();
+    }
+    $('nav').innerHTML = views.map(v=>`<button data-view="${v[0]}">${v[1]}</button>`).join('');
+    $('tabs').innerHTML = views.map(v=>`<button class="tab" data-view="${v[0]}">${v[1]}</button>`).join('');
+    document.querySelectorAll('[data-view]').forEach(b => b.onclick = () => activate(b.dataset.view));
+    ['fullName','dob','gender','year','email','phone'].forEach(id => $(id).addEventListener('input', render));
+    $('sampleBtn').onclick = () => { $('fullName').value='Meera Kapoor'; $('dob').value='1992-11-06'; $('email').value='meera@example.com'; $('phone').value='+91 90000 11111'; render(); };
+    $('saveLeadBtn').onclick = () => {
+      const p = profile();
+      const list = leads();
+      list.unshift({name:p.name,dob:p.dob,email:$('email').value,phone:$('phone').value,driver:p.driver,conductor:p.conductor,destiny:p.destiny,source:'local app',created:new Date().toISOString()});
+      saveLeads(list.slice(0,100));
+      activate('leads');
+    };
+    $('printBtn').onclick = () => window.print();
+    activate('personal');
+  </script>
+  <script>
+    const chaldeanMap = {
+      A:1,I:1,J:1,Q:1,Y:1,
+      B:2,K:2,R:2,
+      C:3,G:3,L:3,S:3,
+      D:4,M:4,T:4,
+      E:5,H:5,N:5,X:5,
+      U:6,V:6,W:6,
+      O:7,Z:7,
+      F:8,P:8
+      };
+
+      function reduceNumber(num){
+          while(num > 9){
+              num = num.toString()
+                  .split('')
+                  .reduce((a,b)=>a + Number(b),0);
+          }
+          return num;
+      }
+
+      function getNameNumber(name){
+
+          let total = 0;
+
+          name = name.toUpperCase();
+
+          for(let ch of name){
+              if(chaldeanMap[ch]){
+                  total += chaldeanMap[ch];
+              }
+          }
+
+          return reduceNumber(total);
+      }
+
+      function checkName(){
+
+          const name =
+              document.getElementById('calcName')
+              .value
+              .trim();
+
+          if(!name){
+              alert('Enter a name');
+              return;
+          }
+
+          const number = getNameNumber(name);
+
+          const favourable = [1,3,5,6];
+
+          const suitable =
+              favourable.includes(number);
+
+          document.getElementById('nameResult')
+              .innerHTML = `
+              <div class="result-card">
+                  <h2>${number}</h2>
+                  <p>
+                      Name Number:
+                      <strong>${number}</strong>
+                  </p>
+                  <p>
+                      ${
+                          suitable
+                          ? '✓ Suitable Name Vibration'
+                          : '⚠ May Need Name Correction'
+                      }
+                  </p>
+              </div>
+          `;
+      }
+  </script>
+</body>
+</html>
