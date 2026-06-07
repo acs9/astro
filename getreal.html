@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏠 India Property Scorecard • Apartments & Villas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500&amp;display=swap');
+        
+        :root {
+            --primary: #00b894;
+        }
+        
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9f5f2 100%);
+            padding: 20px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(90deg, #00b894, #00a085);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 500;
+        }
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .top-bar {
+            padding: 15px 40px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #eee;
+        }
+        .property-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        label { font-weight: 600; font-size: 0.95rem; color: #2d3436; }
+        select, input {
+            padding: 10px 16px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+        select:focus, input:focus { border-color: var(--primary); outline: none; }
+        
+        .main {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 50px;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #00b894;
+        }
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d3436;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .weight {
+            background: #00b894;
+            color: white;
+            font-size: 0.9rem;
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        
+        .legal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 14px;
+        }
+        .doc-item {
+            background: #f8f9fa;
+            padding: 14px 18px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+        .doc-item:hover { background: #e9f5f2; }
+        .doc-item input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: #00b894;
+        }
+        .doc-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .critical { border-left: 5px solid #e74c3c; }
+        
+        .criteria-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .criterion {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 14px;
+        }
+        .criterion-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        input[type="range"] {
+            width: 100%;
+            accent-color: #00b894;
+        }
+        .value {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #00b894;
+        }
+        
+        .score-panel {
+            background: linear-gradient(90deg, #2d3436, #00b894);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .total-score {
+            font-size: 4.5rem;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            line-height: 1;
+        }
+        .verdict {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        .bar {
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 9999px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .fill {
+            height: 100%;
+            background: white;
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .category-scores {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .cat-score {
+            flex: 1;
+            min-width: 220px;
+            background: rgba(255,255,255,0.15);
+            padding: 16px;
+            border-radius: 14px;
+        }
+        
+        .footer {
+            padding: 25px 40px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #636e72;
+        }
+        button {
+            background: #00b894;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 9999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,184,148,0.3);
+        }
+        
+        .note {
+            font-size: 0.9rem;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .main { padding: 25px 20px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <!-- <div style="font-size: 3rem;">🏠</div> -->
+            <div>
+                <h1>India Property Scorecard</h1>
+                <p class="subtitle">Complete interactive evaluation tool for Apartments &amp; Independent Villas • 2026 Edition</p>
+                <p style="opacity:0.85; font-size:0.95rem;">Legal • Construction • Location • Amenities • Weighted Scoring</p>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+                <div style="background:rgba(255,255,255,0.2); padding:8px 18px; border-radius:9999px; display:inline-flex; align-items:center; gap:8px;">
+                    <span style="background:#fff; color:#00b894; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.1rem;">🇮🇳</span>
+                    RERA + State-compliant
+                </div>
+            </div>
+        </header>
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="property-info">
+                <label>Property Type</label>
+                <select id="propertyType" onchange="updatePropertyType()">
+                    <option value="apartment">🏢 Apartment / Flat</option>
+                    <option value="villa">🏡 Independent Villa / House</option>
+                </select>
+            </div>
+            
+            <div class="property-info">
+                <label>Property Name / Project</label>
+                <input type="text" id="propertyName" placeholder="e.g., Prestige Lakeside" value="My Dream Home" style="width:240px;">
+            </div>
+            
+            <div class="property-info">
+                <label>City / Location</label>
+                <input type="text" id="city" placeholder="e.g., Bengaluru / Gurgaon" value="Delhi NCR" style="width:180px;">
+            </div>
+            
+            
+        </div>
+        
+        <div class="main">
+            
+            <!-- LEGAL DOCUMENTS - 40% -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        📜 Legal Documents 
+                        <span class="weight">40%</span>
+                    </div>
+                    <div style="font-size:1.1rem; font-weight:600;" id="legalScoreDisplay">0/100</div>
+                </div>
+                <p style="margin-bottom:20px; color:#636e72;">Complete verified list required for both apartments &amp; villas. Critical documents (marked ★) must be 100% clear or score drops to zero.</p>
+                
+                <div class="legal-grid" id="legalList">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div class="note">
+                    <strong>Pro Tip:</strong> Always get a lawyer to verify originals + 30-year EC. Use state RERA portals + Bhudhaar / Parivahan for cross-check. Missing any ★ document = HIGH RISK.
+                </div>
+            </div>
+            
+            <!-- CONSTRUCTION QUALITY - 25% -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        🏗️ Construction Quality 
+                        <span class="weight">25%</span>
+                    </div>
+                    <div style="font-size:1.1rem; font-weight:600;" id="constScoreDisplay">0/100</div>
+                </div>
+                <div class="criteria-grid" id="constructionGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- LOCATION - 25% -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        📍 Location 
+                        <span class="weight">25%</span>
+                    </div>
+                    <div style="font-size:1.1rem; font-weight:600;" id="locationScoreDisplay">0/100</div>
+                </div>
+                <div class="criteria-grid" id="locationGrid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <!-- AMENITIES - 15% -->
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-title">
+                        🌳 Amenities &amp; Lifestyle 
+                        <span class="weight">15%</span>
+                    </div>
+                    <div style="font-size:1.1rem; font-weight:600;" id="amenitiesScoreDisplay">0/100</div>
+                </div>
+                <div class="criteria-grid" id="amenitiesGrid">
+                    <!-- Populated by JS -->
+                </div>
+                <p style="font-size:0.9rem; color:#636e72; margin-top:12px;">Rate based on what is actually delivered / promised in agreement. Villas score on private + community amenities.</p>
+            </div>
+            
+            <!-- FINAL SCORE PANEL -->
+            <div class="score-panel" id="resultsPanel" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                    <div>
+                        <div style="font-size:1rem; opacity:0.9; letter-spacing:1px;">YOUR TOTAL PROPERTY SCORE</div>
+                        <div class="total-score" id="totalScore">85</div>
+                        <div class="verdict" id="verdictText">Excellent – Strongly Recommend Buying ✅</div>
+                    </div>
+                    
+                    <div style="text-align:right;">
+                        <div id="propertyTypeFinal" style="font-size:1.1rem; font-weight:500;"></div>
+                        <div id="propertyNameFinal" style="font-size:1.8rem; font-weight:600;"></div>
+                    </div>
+                </div>
+                
+                <div class="bar"><div class="fill" id="scoreBar" style="width:85%"></div></div>
+                
+                <div class="category-scores">
+                    <div class="cat-score">
+                        <div>📜 Legal</div>
+                        <div style="font-size:2rem; font-weight:600;" id="finalLegal">92</div>
+                        <div style="font-size:0.8rem;">40% weight</div>
+                    </div>
+                    <div class="cat-score">
+                        <div>🏗️ Construction</div>
+                        <div style="font-size:2rem; font-weight:600;" id="finalConst">78</div>
+                        <div style="font-size:0.8rem;">25% weight</div>
+                    </div>
+                    <div class="cat-score">
+                        <div>📍 Location</div>
+                        <div style="font-size:2rem; font-weight:600;" id="finalLoc">88</div>
+                        <div style="font-size:0.8rem;">25% weight</div>
+                    </div>
+                    <div class="cat-score">
+                        <div>🌳 Amenities</div>
+                        <div style="font-size:2rem; font-weight:600;" id="finalAmen">82</div>
+                        <div style="font-size:0.8rem;">15% weight</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top:25px; font-size:0.95rem; opacity:0.9;">
+                    💡 <strong>Recommendation:</strong> <span id="recommendationText"></span><br>
+                    This scorecard follows established Indian real-estate best practices (RERA, state revenue records, construction audit standards &amp; buyer checklists used by major banks &amp; developers).
+                </div>
+            </div>
+
+            <div style="margin-left:auto; display:flex; gap:12px; align-items:center;">
+                <button onclick="resetScorecard()" style="background:#fff; color:#2d3436; border:2px solid #ddd;">⟳ Reset All</button>
+                <button onclick="calculateAndShowResults()">📊 Calculate Final Score</button>
+                <div id="lastUpdated" style="font-size:0.85rem; opacity:0.7;">Last calculated: just now</div>
+            </div>
+            
+            <div style="text-align:center; margin-top:20px; color:#00b894; font-weight:500;">
+                ✅ Works for both Apartments &amp; Independent Villas • Real-time scoring • Mobile-friendly
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <small>
+                The essential tool for Indian homebuyers • Based on RERA 2016, state revenue laws, and industry checklists (2026) <br/>Powered by DWI • Valid for Delhi NCR &amp; across India
+            </small>
+            <div style="display:flex; gap:10px;">
+                <a href="#" onclick="window.print()" style="color:#00b894; text-decoration:none;">🖨️ Print / Save as PDF</a> | 
+                <a href="#" onclick="shareScorecard()" style="color:#00b894; text-decoration:none;">🔗 Share Link</a>
+            </div>
+            <!-- <div></div> -->
+        </div>
+    </div>
+
+    <script>
+        // Complete Legal Documents List (unified for both property types)
+        const legalDocsBase = [
+            { id: "title", name: "★ Title Deed / Absolute Sale Deed", critical: true, apt: true, villa: true },
+            { id: "mother", name: "★ Mother Deed / Chain of Title (30+ years)", critical: true, apt: true, villa: true },
+            { id: "ec", name: "★ Encumbrance Certificate (Nil – last 30 yrs)", critical: true, apt: true, villa: true },
+            { id: "khata", name: "★ Khata / Patta / Mutation Extract (state-specific)", critical: true, apt: true, villa: true },
+            { id: "tax", name: "Property Tax Receipts + No Dues Certificate", critical: false, apt: true, villa: true },
+            { id: "plan", name: "★ Approved Building / Layout Plans (municipal)", critical: true, apt: true, villa: true },
+            { id: "cc", name: "Commencement Certificate", critical: false, apt: true, villa: true },
+            { id: "oc", name: "★ Occupancy / Completion Certificate (OC/CC)", critical: true, apt: true, villa: true },
+            { id: "rera", name: "★ RERA Registration Certificate + Project Details", critical: true, apt: true, villa: true },
+            { id: "agreement", name: "★ Sale / Builder-Buyer Agreement", critical: true, apt: true, villa: true },
+            { id: "society", name: "Society Share Certificate / NOC (Apartments only)", critical: false, apt: true, villa: false },
+            { id: "conversion", name: "Land Conversion Certificate (if agri → residential)", critical: false, apt: false, villa: true },
+            { id: "nocs", name: "Fire / Environmental / Other NOCs", critical: false, apt: true, villa: true },
+            { id: "bank", name: "Bank NOC / Loan Clearance (if applicable)", critical: false, apt: true, villa: true }
+        ];
+
+        // Construction Quality Criteria (same for both)
+        const constructionCriteria = [
+            { id: "c1", label: "Structural design & soil test compliance", max: 10 },
+            { id: "c2", label: "Material quality (cement, steel, concrete mix)", max: 10 },
+            { id: "c3", label: "Finishes (paint, flooring, doors/windows)", max: 10 },
+            { id: "c4", label: "Plumbing + electrical installations", max: 10 },
+            { id: "c5", label: "Waterproofing & leakage protection", max: 10 },
+            { id: "c6", label: "RERA specification compliance", max: 10 },
+            { id: "c7", label: "Builder reputation & quality track record", max: 10 },
+            { id: "c8", label: "On-site inspection (no cracks, workmanship)", max: 10 }
+        ];
+
+        // Location Criteria
+        const locationCriteria = [
+            { id: "l1", label: "Connectivity (metro, roads, public transport)", max: 10 },
+            { id: "l2", label: "Proximity to schools, hospitals, markets, offices", max: 10 },
+            { id: "l3", label: "Neighbourhood safety & reputation", max: 10 },
+            { id: "l4", label: "Future infrastructure / development potential", max: 10 },
+            { id: "l5", label: "Environmental factors (pollution, greenery)", max: 10 },
+            { id: "l6", label: "Traffic levels & daily commute ease", max: 10 }
+        ];
+
+        // Amenities Criteria (slightly different emphasis based on type)
+        let amenitiesCriteria = [];
+
+        function getAmenitiesCriteria(type) {
+            if (type === "apartment") {
+                return [
+                    { id: "a1", label: "24×7 Security + CCTV", max: 10 },
+                    { id: "a2", label: "Covered parking & visitor parking", max: 10 },
+                    { id: "a3", label: "Power backup (full or partial)", max: 10 },
+                    { id: "a4", label: "Clubhouse, gym, swimming pool", max: 10 },
+                    { id: "a5", label: "Landscaped gardens & open spaces", max: 10 },
+                    { id: "a6", label: "Kids play area & family amenities", max: 10 },
+                    { id: "a7", label: "Maintenance quality of common areas", max: 10 },
+                    { id: "a8", label: "Sustainability (solar, rainwater, STP)", max: 10 }
+                ];
+            } else {
+                return [
+                    { id: "a1", label: "Gated community / private security", max: 10 },
+                    { id: "a2", label: "Private + guest parking", max: 10 },
+                    { id: "a3", label: "Independent power backup / solar", max: 10 },
+                    { id: "a4", label: "Private garden / lawn area", max: 10 },
+                    { id: "a5", label: "Clubhouse or community facilities", max: 10 },
+                    { id: "a6", label: "Kids play area (if gated)", max: 10 },
+                    { id: "a7", label: "Independent utilities (water, sewage)", max: 10 },
+                    { id: "a8", label: "Sustainability features", max: 10 }
+                ];
+            }
+        }
+
+        // Render all sections
+        function renderAll() {
+            const type = document.getElementById("propertyType").value;
+            
+            // Legal
+            const legalContainer = document.getElementById("legalList");
+            legalContainer.innerHTML = "";
+            const filteredDocs = legalDocsBase.filter(doc => (type === "apartment" ? doc.apt : doc.villa));
+            
+            filteredDocs.forEach(doc => {
+                const div = document.createElement("div");
+                div.className = `doc-item ${doc.critical ? "critical" : ""}`;
+                div.innerHTML = `
+                    <input type="checkbox" id="${doc.id}" onchange="autoCalculate()">
+                    <div class="doc-name">${doc.name}</div>
+                    ${doc.critical ? `<span style="color:#e74c3c; font-size:0.8rem; font-weight:700;">★</span>` : ""}
+                `;
+                legalContainer.appendChild(div);
+            });
+            
+            // Construction
+            const constContainer = document.getElementById("constructionGrid");
+            constContainer.innerHTML = "";
+            constructionCriteria.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "criterion";
+                div.innerHTML = `
+                    <div class="criterion-label">
+                        <span>${c.label}</span>
+                        <span class="value" id="val-${c.id}">5</span>
+                    </div>
+                    <input type="range" min="1" max="10" value="5" id="${c.id}" oninput="updateValue(this); autoCalculate()">
+                `;
+                constContainer.appendChild(div);
+            });
+            
+            // Location
+            const locContainer = document.getElementById("locationGrid");
+            locContainer.innerHTML = "";
+            locationCriteria.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "criterion";
+                div.innerHTML = `
+                    <div class="criterion-label">
+                        <span>${c.label}</span>
+                        <span class="value" id="val-${c.id}">5</span>
+                    </div>
+                    <input type="range" min="1" max="10" value="5" id="${c.id}" oninput="updateValue(this); autoCalculate()">
+                `;
+                locContainer.appendChild(div);
+            });
+            
+            // Amenities
+            amenitiesCriteria = getAmenitiesCriteria(type);
+            const amenContainer = document.getElementById("amenitiesGrid");
+            amenContainer.innerHTML = "";
+            amenitiesCriteria.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "criterion";
+                div.innerHTML = `
+                    <div class="criterion-label">
+                        <span>${c.label}</span>
+                        <span class="value" id="val-${c.id}">5</span>
+                    </div>
+                    <input type="range" min="1" max="10" value="5" id="${c.id}" oninput="updateValue(this); autoCalculate()">
+                `;
+                amenContainer.appendChild(div);
+            });
+            
+            autoCalculate();
+        }
+        
+        function updateValue(slider) {
+            document.getElementById("val-" + slider.id).textContent = slider.value;
+        }
+        
+        function autoCalculate() {
+            const type = document.getElementById("propertyType").value;
+            
+            // Legal score
+            const filteredDocs = legalDocsBase.filter(doc => (type === "apartment" ? doc.apt : doc.villa));
+            let checkedCount = 0;
+            let criticalMissing = false;
+            
+            filteredDocs.forEach(doc => {
+                const cb = document.getElementById(doc.id);
+                if (cb && cb.checked) checkedCount++;
+                if (doc.critical && cb && !cb.checked) criticalMissing = true;
+            });
+            
+            let legalScore = Math.round((checkedCount / filteredDocs.length) * 100);
+            if (criticalMissing) legalScore = Math.min(legalScore, 30); // Heavy penalty
+            
+            document.getElementById("legalScoreDisplay").innerHTML = `
+                ${legalScore}<span style="font-size:1rem; margin-left:8px;">/100</span>
+                ${criticalMissing ? `<span style="color:#e74c3c; font-size:0.9rem; margin-left:12px;">⚠️ Critical docs missing!</span>` : ""}
+            `;
+            
+            // Construction score
+            let constTotal = 0;
+            constructionCriteria.forEach(c => {
+                const val = parseFloat(document.getElementById(c.id).value) || 5;
+                constTotal += val;
+            });
+            const constScore = Math.round((constTotal / constructionCriteria.length) * 10);
+            document.getElementById("constScoreDisplay").textContent = constScore + "/100";
+            
+            // Location score
+            let locTotal = 0;
+            locationCriteria.forEach(c => {
+                const val = parseFloat(document.getElementById(c.id).value) || 5;
+                locTotal += val;
+            });
+            const locScore = Math.round((locTotal / locationCriteria.length) * 10);
+            document.getElementById("locationScoreDisplay").textContent = locScore + "/100";
+            
+            // Amenities score
+            let amenTotal = 0;
+            amenitiesCriteria.forEach(c => {
+                const val = parseFloat(document.getElementById(c.id).value) || 5;
+                amenTotal += val;
+            });
+            const amenScore = Math.round((amenTotal / amenitiesCriteria.length) * 10);
+            document.getElementById("amenitiesScoreDisplay").textContent = amenScore + "/100";
+            
+            // Store in global for final calc
+            window.currentScores = {
+                legal: legalScore,
+                construction: constScore,
+                location: locScore,
+                amenities: amenScore
+            };
+        }
+        
+        function updatePropertyType() {
+            renderAll();
+        }
+        
+        function calculateAndShowResults() {
+            if (!window.currentScores) {
+                autoCalculate();
+            }
+            
+            const scores = window.currentScores;
+            const weightedTotal = Math.round(
+                (scores.legal * 0.40) +
+                (scores.construction * 0.25) +
+                (scores.location * 0.25) +
+                (scores.amenities * 0.15)
+            );
+            
+            // Fill final panel
+            document.getElementById("totalScore").textContent = weightedTotal;
+            document.getElementById("scoreBar").style.width = weightedTotal + "%";
+            
+            const typeName = document.getElementById("propertyType").value === "apartment" ? "Apartment" : "Independent Villa";
+            document.getElementById("propertyTypeFinal").innerHTML = `🏠 ${typeName}`;
+            document.getElementById("propertyNameFinal").textContent = document.getElementById("propertyName").value || "Property";
+            
+            document.getElementById("finalLegal").textContent = scores.legal;
+            document.getElementById("finalConst").textContent = scores.construction;
+            document.getElementById("finalLoc").textContent = scores.location;
+            document.getElementById("finalAmen").textContent = scores.amenities;
+            
+            // Verdict
+            let verdict = "";
+            let rec = "";
+            if (weightedTotal >= 90) {
+                verdict = "🌟 Excellent – Strongly Recommend Buying";
+                rec = "Clear title + strong construction &amp; location. Proceed with confidence!";
+            } else if (weightedTotal >= 75) {
+                verdict = "✅ Good – Worth Buying (with minor checks)";
+                rec = "Solid overall. Fix any remaining legal gaps before final payment.";
+            } else if (weightedTotal >= 60) {
+                verdict = "⚠️ Average – Consider Only After Improvements";
+                rec = "Legal or construction issues present. Negotiate or walk away.";
+            } else {
+                verdict = "❌ Avoid – High Risk Property";
+                rec = "Major red flags. Do not buy without complete resolution.";
+            }
+            
+            document.getElementById("verdictText").innerHTML = verdict;
+            document.getElementById("recommendationText").innerHTML = rec;
+            document.getElementById("resultsPanel").style.display = "block";
+            
+            // Update timestamp
+            document.getElementById("lastUpdated").textContent = "Last calculated: just now";
+            
+            // Scroll to results
+            document.getElementById("resultsPanel").scrollIntoView({ behavior: "smooth" });
+        }
+        
+        function resetScorecard() {
+            if (confirm("Reset entire scorecard?")) {
+                document.getElementById("resultsPanel").style.display = "none";
+                renderAll();
+            }
+        }
+        
+        function shareScorecard() {
+            const url = window.location.href + "?score=" + (window.currentScores ? JSON.stringify(window.currentScores) : "new");
+            navigator.clipboard.writeText("Check my India Property Scorecard: " + url).then(() => {
+                alert("✅ Link copied! Share with family or lawyer.");
+            });
+        }
+        
+        // Initialize
+        window.onload = function() {
+            renderAll();
+            console.log("%c✅ India Property Scorecard loaded successfully for Apartments & Villas", "color:#00b894; font-weight:600;");
+        };
+    </script>
+</body>
+</html>
